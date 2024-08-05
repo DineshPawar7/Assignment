@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/admin/cars')
+                .then(response => response.json())
+                .then(data => {
+                    const carList = document.getElementById('carList');
+                    data.forEach(car => {
+                        const li = document.createElement('li');
+                        li.textContent = `Name: ${car.name}, Year: ${car.year}, Price: ${car.price}`;
+                        carList.appendChild(li);
+                    });
+                });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <ul id="carList"></ul>
+        <form id="addCarForm">
+            <h2>Add a Car</h2>
+            <label for="name">Car Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="year">Year:</label>
+            <input type="text" id="year" name="year" required>
+            <label for="price">Price:</label>
+            <input type="text" id="price" name="price" required>
+            <button type="submit">Add Car</button>
+        </form>
+        <script>
+            document.getElementById('addCarForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+                fetch('/admin/cars', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(() => {
+                    document.location.reload();
+                });
+            });
+        </script>
+    </div>
+    
+</body>
+</html>
